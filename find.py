@@ -26,16 +26,29 @@ for num in range(pageNumStart,pageNumEnd):
     html=requests.get(url,headers=header)
     bs=BeautifulSoup(html.text,'lxml')
     main=bs.find('h1',{'class':'title'}).text
-    id=bs.find('div',{'class':'hint'})
-    if not id:
-        id=bs.find('a',{'class':'userid'}).text
-    else:
-        id=bs.find('div',{'class':'hint'}).text
-        id=id[9:-3]
+    floor=bs.find('a',{'class':'floor tippy-gpbp'}).text
 
+    if '樓主' in floor:
+        fold=bs.find('a',{'class':'show'})
+        if fold:
+            #摺疊
+            id=bs.find('a',{'class':'userid'}).text
+            name=bs.find('a',{'class':'username'}).text
+
+        else:
+            #正常
+            id=bs.find('a',{'class':'userid'}).text
+            name=bs.find('a',{'class':'username'}).text
+    else:
+        #刪文
+        delete=bs.find('div',{'class':'hint'}).text
+        id=delete[9:-3]
+        name='這傢伙刪文了'
 
     sheet['A'+str(row)]=main
     sheet['B'+str(row)]=id
+    sheet['C'+str(row)]=name
+    print(str(num)+'成功')
     row+=1
 input('enter')
 
